@@ -1,0 +1,17 @@
+{
+  "databases":[
+    {
+      "dbname": "db1",
+      "host": "db1.example.com",
+      "user": "username",
+      "pass": "password",
+      "role": "master"
+    },{
+      "dbname": "db2",
+      "host": "db2.example.com",
+      "user": "username",
+      "pass": "password",
+      "role": "slave"
+    }],
+  "tables": "exampleClients,exampleServices"
+}
