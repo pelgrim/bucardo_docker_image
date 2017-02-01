@@ -29,14 +29,16 @@ db_attr() {
 
 add_databases_to_bucardo() {
   echo "[CONTAINER] Adding databases to Bucardo..."
-  run_bucardo_command "add db db0 dbname=$(db_attr 0 dbname) \
-                              user=$(db_attr 0 user) \
-                              pass=$(db_attr 0 pass) \
-                              host=$(db_attr 0 host)"
-  run_bucardo_command "add db db1 dbname=$(db_attr 1 dbname) \
-                              user=$(db_attr 1 user) \
-                              pass=$(db_attr 1 pass) \
-                              host=$(db_attr 1 host)"
+  local db_index=0
+  NUM_DBS=$(jq '.databases' /media/bucardo/bucardo.json | grep dbname | wc -l)
+  while [[ $db_index -lt $NUM_DBS ]]; do
+    echo "[CONTAINER] Adding db $db_index"
+    run_bucardo_command "add db db$db_index dbname=$(db_attr $db_index dbname) \
+                                user=$(db_attr $db_index user) \
+                                pass=$(db_attr $db_index pass) \
+                                host=$(db_attr $db_index host)"
+    db_index=$(expr $db_index + 1)
+  done
 }
 
 add_sync_to_bucardo() {
