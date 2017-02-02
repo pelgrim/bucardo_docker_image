@@ -53,7 +53,6 @@ add_databases_to_bucardo() {
     echo "[CONTAINER] Adding db $db_index"
     db_id=$(db_attr $db_index id)
     db_pass=$(load_db_pass $db_index)
-    echo "[CONTAINER] $db_pass"
     run_bucardo_command "del db db$db_id --force"
     run_bucardo_command "add db db$db_id dbname=$(db_attr $db_index dbname) \
                                 user=$(db_attr $db_index user) \
