@@ -27,12 +27,19 @@ db_attr() {
   jq ".databases[$database].$attr" /media/bucardo/bucardo.json
 }
 
+sync_attr() {
+  local sync=$1
+  local attr=$2
+  jq ".syncs[$sync].$attr" /media/bucardo/bucardo.json
+}
+
 add_databases_to_bucardo() {
   echo "[CONTAINER] Adding databases to Bucardo..."
   local db_index=0
   NUM_DBS=$(jq '.databases' /media/bucardo/bucardo.json | grep dbname | wc -l)
   while [[ $db_index -lt $NUM_DBS ]]; do
     echo "[CONTAINER] Adding db $db_index"
+    run_bucardo_command "del db db$db_index --force"
     run_bucardo_command "add db db$db_index dbname=$(db_attr $db_index dbname) \
                                 user=$(db_attr $db_index user) \
                                 pass=$(db_attr $db_index pass) \
@@ -41,11 +48,40 @@ add_databases_to_bucardo() {
   done
 }
 
-add_sync_to_bucardo() {
-  echo "[CONTAINER] Adding sync to Bucardo..."
-  run_bucardo_command "add sync sync0 \
-                       dbs=db0,db1 \
-                       tables=$(jq '.tables' /media/bucardo/bucardo.json)"
+db_sync_entities() {
+  local sync_index=$1
+  local entity=$2
+  local db_index=0
+  local sync_entity
+
+  sync_entity=$(sync_attr $sync_index $entity"s[$db_index]")
+  while [[ "$sync_entity" != null ]]; do
+    [[ "$DB_STRING" != "" ]] && DB_STRING="$DB_STRING,"
+    DB_STRING=$DB_STRING"db"$sync_entity":$entity"
+    db_index=$(expr $db_index + 1)
+    sync_entity=$(sync_attr $sync_index $entity"s[$db_index]")
+  done
+  }
+
+db_sync_string() {
+  local sync_index=$1
+  DB_STRING=""
+  db_sync_entities $sync_index "source"
+  db_sync_entities $sync_index "target"
+}
+
+add_syncs_to_bucardo() {
+  local sync_index=0
+  local num_syncs=$(jq '.syncs' /media/bucardo/bucardo.json | grep tables | wc -l)
+  while [[ $sync_index -lt $num_syncs ]]; do
+    echo "[CONTAINER] Adding sync$sync_index to Bucardo..."
+    db_sync_string $sync_index
+    run_bucardo_command "del sync sync$sync_index"
+    run_bucardo_command "add sync sync$sync_index \
+                         dbs=$DB_STRING \
+                         tables=$(sync_attr $sync_index tables)"
+    sync_index=$(expr $sync_index + 1)
+  done
 }
 
 start_bucardo() {
@@ -65,7 +101,7 @@ bucardo_status() {
 main() {
   start_postgres 2> /dev/null
   add_databases_to_bucardo
-  add_sync_to_bucardo
+  add_syncs_to_bucardo
   start_bucardo
   bucardo_status
 }
