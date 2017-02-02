@@ -1,13 +1,12 @@
 # Bucardo
-##### Lucas' Docker Container
 
-Ubuntu-based Bucardo container.
+Ubuntu-based Bucardo image for Docker Containers.
 
 ### Contents
-* [How to use it (plain-text passwords)]
-* [How to use it (env-based passwords)]
-* [How it works]
-* [Acknowlegment]
+* [How to use it (plain-text passwords)](#how-to-use-it-plain-text-passwords-how-to-use-it-plain-text-passwords-)
+* [How to use it (env-based passwords)](#how-to-use-it-env-based-passwords-)
+* [Acknowlegments](#acknowlegments)
+* [Copyright and License](#copyright-and-license)
 
 ---
 
@@ -81,6 +80,30 @@ And that's that. If you run a <code>docker attach my_own_bucardo_container</code
 
 ## How to use it (env-based passwords)
 
-## How it works
+Same as before. The only difference is:
 
-## Acknowlegment
+* In the JSON database definition, type "env" for password instead of the database user password;
+
+* When you create a container, inform the password as a environment variable named *BUCARDO_DB<ID>*, where *ID* is the *ID* you defined earlier in the *bucardo.json*:
+
+  ```bash
+  docker run --name my_own_bucardo_container \
+      -v <bucardo.json dir>:/media/bucardo \
+      -e BUCARDO_DB3="secret" \
+      -it plgr/bucardo
+  ```
+
+## Acknowlegments
+
+This image uses the following software components:
+
+* Ubuntu Xenial;
+* PostgreSQL 9.5;
+* Bucardo;
+* JQ.
+
+## Copyright and License
+
+This project is copyright 2017 Lucas Vieira lucas@vieira.io.<br />
+Licensed under Apache 2.0 License.<br />
+Check the license file for details.
