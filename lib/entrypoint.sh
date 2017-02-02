@@ -35,12 +35,14 @@ sync_attr() {
 
 add_databases_to_bucardo() {
   echo "[CONTAINER] Adding databases to Bucardo..."
+  local db_id
   local db_index=0
   NUM_DBS=$(jq '.databases' /media/bucardo/bucardo.json | grep dbname | wc -l)
   while [[ $db_index -lt $NUM_DBS ]]; do
     echo "[CONTAINER] Adding db $db_index"
-    run_bucardo_command "del db db$db_index --force"
-    run_bucardo_command "add db db$db_index dbname=$(db_attr $db_index dbname) \
+    db_id=$(db_attr $db_index id)
+    run_bucardo_command "del db db$db_id --force"
+    run_bucardo_command "add db db$db_id dbname=$(db_attr $db_index dbname) \
                                 user=$(db_attr $db_index user) \
                                 pass=$(db_attr $db_index pass) \
                                 host=$(db_attr $db_index host)"
