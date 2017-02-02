@@ -33,18 +33,31 @@ sync_attr() {
   jq ".syncs[$sync].$attr" /media/bucardo/bucardo.json
 }
 
+load_db_pass() {
+  local database=$1
+  local pass=$(db_attr $database pass)
+  local id=$(db_attr $database id)
+  if [[ "$pass" == "\"env\"" ]]; then
+    echo $(env | grep "BUCARDO_DB$id" | cut -d'=' -f2)
+  else
+    echo $pass
+  fi
+}
+
 add_databases_to_bucardo() {
   echo "[CONTAINER] Adding databases to Bucardo..."
-  local db_id
+  local db_id db_pass
   local db_index=0
   NUM_DBS=$(jq '.databases' /media/bucardo/bucardo.json | grep dbname | wc -l)
   while [[ $db_index -lt $NUM_DBS ]]; do
     echo "[CONTAINER] Adding db $db_index"
     db_id=$(db_attr $db_index id)
+    db_pass=$(load_db_pass $db_index)
+    echo "[CONTAINER] $db_pass"
     run_bucardo_command "del db db$db_id --force"
     run_bucardo_command "add db db$db_id dbname=$(db_attr $db_index dbname) \
                                 user=$(db_attr $db_index user) \
-                                pass=$(db_attr $db_index pass) \
+                                pass=$db_pass \
                                 host=$(db_attr $db_index host)"
     db_index=$(expr $db_index + 1)
   done
