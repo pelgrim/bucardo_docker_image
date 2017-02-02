@@ -1,17 +1,33 @@
 {
   "databases":[
     {
-      "dbname": "db1",
-      "host": "db1.example.com",
-      "user": "username",
-      "pass": "password",
-      "role": "master"
+      "id": 0,
+      "dbname": "example_db",
+      "host": "host.example.com",
+      "user": "example_user",
+      "pass": "secret"
     },{
-      "dbname": "db2",
-      "host": "db2.example.com",
-      "user": "username",
-      "pass": "password",
-      "role": "slave"
+      "id": 1,
+      "dbname": "example_db",
+      "host": "host.example.com",
+      "user": "example_user",
+      "pass": "secret"
+    },{
+      "id": 2,
+      "dbname": "example_db",
+      "host": "host.example.com",
+      "user": "example_user",
+      "pass": "secret"
     }],
-  "tables": "exampleClients,exampleServices"
+  "syncs" : [
+    {
+      "sources": [0],
+      "targets": [1,2],
+      "tables": "client"
+    },{
+      "sources": [1,2],
+      "targets": [0],
+      "tables": "product, order"
+    }
+  ]
 }
