@@ -104,6 +104,6 @@ This image uses the following software components:
 
 ## Copyright and License
 
-This project is copyright 2017 Lucas Vieira lucas@vieira.io.<br />
+This project is copyright 2017 Lucas Vieira [lucas@vieira.io](mailto:lucas@vieira.io).<br />
 Licensed under Apache 2.0 License.<br />
 Check the license file for details.
