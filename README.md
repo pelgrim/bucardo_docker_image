@@ -3,8 +3,8 @@
 Ubuntu-based Bucardo image for Docker Containers.
 
 ### Contents
-* [How to use it (plain-text passwords)](#how-to-use-it-plain-text-passwords-how-to-use-it-plain-text-passwords-)
-* [How to use it (env-based passwords)](#how-to-use-it-env-based-passwords-)
+* [How to use it (plain-text passwords)](#how-to-use-it-plain-text-passwords-how-to-use-it-plain-text-passwords)
+* [How to use it (env-based passwords)](#how-to-use-it-env-based-passwords)
 * [Acknowlegments](#acknowlegments)
 * [Copyright and License](#copyright-and-license)
 
