@@ -7,6 +7,48 @@
 
 # ~ #
 
+# TODO: write password validator
+# TODO: include type after each db_attr and sync_attr call
+# TODO: DRY db_attr and sync_attr
+# TODO: DRY validators
+
+# Exits with an error when there are any invalid chars
+check_invalid_chars() {
+  local attr_name=$1
+  local invalid_chars=$2
+  if [[ "$invalid_chars" != "" ]]; then
+    echo "[ERROR] Invalid value \"$string_attr\" for attribute $attr_name!" 1>&2
+    exit 1
+  fi
+}
+
+# An Integer is only allowed to be an Integer
+validate_integer_attr() {
+  local attr_name=$1
+  local string_attr=$2
+  local invalid_chars=$(echo $string_attr | sed -e "s/[[:digit:]]//g")
+  check_invalid_chars $attr_name $invalid_chars
+}
+
+# A String is allowed to have alphanumeric chars,
+# dots, dashes, and underscores.
+validate_string_attr() {
+  local attr_name=$1
+  local string_attr=$2
+  local invalid_chars=$(echo $string_attr | sed -e "s/[[:alnum:]]//g" \
+                                                -e "s/\(.\|-\|_\)//g")
+  check_invalid_chars $attr_name $invalid_chars
+}
+
+# A List is allowed to have have alphanumeric chars,
+# dots, dashes, underscores, and commas.
+validate_list_attr() {
+  local attr_name=$1
+  local string_attr=$2
+  local invalid_chars=$(echo $string_attr | sed -e "s/\,//g")
+  validate_string_attr $attr_name $invalid_chars
+}
+
 run_bucardo_command() {
   local comm=$1
   su - postgres -c "bucardo $comm"
@@ -24,19 +66,34 @@ start_postgres() {
 db_attr() {
   local database=$1
   local attr=$2
-  jq ".databases[$database].$attr" /media/bucardo/bucardo.json
+  local attr_type=$3
+  local value="$(jq ".databases[$database].$attr" /media/bucardo/bucardo.json)"
+  case "$attr_type" in
+    "string") validate_string_attr "$attr" "$value" ;;
+    "list") validate_list_attr "$attr" "$value" ;;
+    "integer") validate_integer_attr "$attr" "$value" ;;
+    *) echo "Invalid type for $attr." 1>&2; exit 2;;
+  esac
+  echo $value
 }
 
 sync_attr() {
   local sync=$1
   local attr=$2
-  jq ".syncs[$sync].$attr" /media/bucardo/bucardo.json
+  local value="$(jq ".syncs[$sync].$attr" /media/bucardo/bucardo.json)"
+  case "$attr_type" in
+    "string") validate_string_attr "$attr" "$value" ;;
+    "list") validate_list_attr "$attr" "$value" ;;
+    "integer") validate_integer_attr "$attr" "$value" ;;
+    *) echo "Invalid type for $attr." 1>&2; exit 2;;
+  esac
+  echo $value
 }
 
 load_db_pass() {
   local database=$1
   local pass=$(db_attr $database pass)
-  local id=$(db_attr $database id)
+  local id=$(db_attr $database id integer)
   if [[ "$pass" == "\"env\"" ]]; then
     echo $(env | grep "BUCARDO_DB$id" | cut -d'=' -f2)
   else
