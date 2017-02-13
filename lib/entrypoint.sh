@@ -95,9 +95,9 @@ load_db_pass() {
   local pass=$(db_attr $database pass)
   local id=$(db_attr $database id integer)
   if [[ "$pass" == "\"env\"" ]]; then
-    echo $(env | grep "BUCARDO_DB$id" | cut -d'=' -f2)
+    echo "$(env | grep "BUCARDO_DB$id" | cut -d'=' -f2)"
   else
-    echo $pass
+    echo "$pass"
   fi
 }
 
@@ -111,10 +111,10 @@ add_databases_to_bucardo() {
     db_id=$(db_attr $db_index id)
     db_pass=$(load_db_pass $db_index)
     run_bucardo_command "del db db$db_id --force"
-    run_bucardo_command "add db db$db_id dbname=$(db_attr $db_index dbname) \
-                                user=$(db_attr $db_index user) \
-                                pass=$db_pass \
-                                host=$(db_attr $db_index host)"
+    run_bucardo_command "add db db$db_id dbname=\"$(db_attr $db_index dbname)\" \
+                                user=\"$(db_attr $db_index user)\" \
+                                pass=\"$db_pass\" \
+                                host=\"$(db_attr $db_index host)\""
     db_index=$(expr $db_index + 1)
   done
 }
@@ -174,7 +174,8 @@ main() {
   add_databases_to_bucardo
   add_syncs_to_bucardo
   start_bucardo
-  bucardo_status
+  /bin/bash
+  #bucardo_status
 }
 
 main
