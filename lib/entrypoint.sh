@@ -125,12 +125,12 @@ db_sync_entities() {
   local db_index=0
   local sync_entity
 
-  sync_entity=$(sync_attr $sync_index $entity"s[$db_index]" list)
+  sync_entity=$(sync_attr $sync_index $entity"s[$db_index]" integer)
   while [[ "$sync_entity" != null ]]; do
     [[ "$DB_STRING" != "" ]] && DB_STRING="$DB_STRING,"
     DB_STRING=$DB_STRING"db"$sync_entity":$entity"
     db_index=$(expr $db_index + 1)
-    sync_entity=$(sync_attr $sync_index $entity"s[$db_index]" list )
+    sync_entity=$(sync_attr $sync_index $entity"s[$db_index]" integer)
   done
 }
 
