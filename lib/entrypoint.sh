@@ -90,6 +90,15 @@ sync_attr() {
   echo $value
 }
 
+#First validate onetimecopy is an integer and then validate if it's 0,1 or 2
+one_time_copy_attr() {
+  local sync_index=$1
+  local value=$(sync_attr $sync_index onetimecopy integer)
+  local invalid_chars=$(echo $string_attr | sed -e "s/[0,1,2]//")
+  check_invalid_chars $value $invalid_chars
+  echo $value 
+}
+
 load_db_pass() {
   local database=$1
   local pass=$(db_attr $database pass)
@@ -147,10 +156,12 @@ add_syncs_to_bucardo() {
   while [[ $sync_index -lt $num_syncs ]]; do
     echo "[CONTAINER] Adding sync$sync_index to Bucardo..."
     db_sync_string $sync_index
+    local one_time_copy="$(one_time_copy_attr $sync_index)"
     run_bucardo_command "del sync sync$sync_index"
     run_bucardo_command "add sync sync$sync_index \
                          dbs=$DB_STRING \
-                         tables=$(sync_attr $sync_index tables)"
+                         tables=$(sync_attr $sync_index tables) \
+                         onetimecopy=$one_time_copy"
     sync_index=$(expr $sync_index + 1)
   done
 }

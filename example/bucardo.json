@@ -23,11 +23,13 @@
     {
       "sources": [0],
       "targets": [1,2],
-      "tables": "client"
+      "tables": "client",
+      "onetimecopy": 1
     },{
       "sources": [1,2],
       "targets": [0],
-      "tables": "product, order"
+      "tables": "product, order",
+      "onetimecopy": 0
     }
   ]
 }
