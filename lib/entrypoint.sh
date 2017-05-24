@@ -134,12 +134,12 @@ db_sync_entities() {
   local db_index=0
   local sync_entity
 
-  sync_entity=$(sync_attr $sync_index $entity"s[$db_index]" integer)
+  sync_entity=$(sync_attr $sync_index $entity"s[$db_index]" string)
   while [[ "$sync_entity" != null ]]; do
     [[ "$DB_STRING" != "" ]] && DB_STRING="$DB_STRING,"
     DB_STRING=$DB_STRING"db"$sync_entity":$entity"
     db_index=$(expr $db_index + 1)
-    sync_entity=$(sync_attr $sync_index $entity"s[$db_index]" integer)
+    sync_entity=$(sync_attr $sync_index $entity"s[$db_index]" string)
   done
 }
 
@@ -160,7 +160,7 @@ add_syncs_to_bucardo() {
     run_bucardo_command "del sync sync$sync_index"
     run_bucardo_command "add sync sync$sync_index \
                          dbs=$DB_STRING \
-                         tables=$(sync_attr $sync_index tables) \
+                         tables=$(sync_attr $sync_index tables list) \
                          onetimecopy=$one_time_copy"
     sync_index=$(expr $sync_index + 1)
   done
