@@ -8,7 +8,6 @@
 # ~ #
 
 # TODO: write password validator
-# TODO: include type after each db_attr and sync_attr call
 # TODO: DRY db_attr and sync_attr
 # TODO: DRY validators
 
@@ -80,6 +79,7 @@ db_attr() {
 sync_attr() {
   local sync=$1
   local attr=$2
+  local attr_type=$3
   local value="$(jq ".syncs[$sync].$attr" /media/bucardo/bucardo.json)"
   case "$attr_type" in
     "string") validate_string_attr "$attr" "$value" ;;
@@ -101,7 +101,7 @@ one_time_copy_attr() {
 
 load_db_pass() {
   local database=$1
-  local pass=$(db_attr $database pass)
+  local pass=$(db_attr $database pass string)
   local id=$(db_attr $database id integer)
   if [[ "$pass" == "\"env\"" ]]; then
     echo "$(env | grep "BUCARDO_DB$id" | cut -d'=' -f2)"
@@ -117,13 +117,13 @@ add_databases_to_bucardo() {
   NUM_DBS=$(jq '.databases' /media/bucardo/bucardo.json | grep dbname | wc -l)
   while [[ $db_index -lt $NUM_DBS ]]; do
     echo "[CONTAINER] Adding db $db_index"
-    db_id=$(db_attr $db_index id)
+    db_id=$(db_attr $db_index id integer)
     db_pass=$(load_db_pass $db_index)
     run_bucardo_command "del db db$db_id --force"
-    run_bucardo_command "add db db$db_id dbname=\"$(db_attr $db_index dbname)\" \
-                                user=\"$(db_attr $db_index user)\" \
+    run_bucardo_command "add db db$db_id dbname=\"$(db_attr $db_index dbname string)\" \
+                                user=\"$(db_attr $db_index user string)\" \
                                 pass=\"$db_pass\" \
-                                host=\"$(db_attr $db_index host)\""
+                                host=\"$(db_attr $db_index host string)\""
     db_index=$(expr $db_index + 1)
   done
 }
@@ -134,14 +134,14 @@ db_sync_entities() {
   local db_index=0
   local sync_entity
 
-  sync_entity=$(sync_attr $sync_index $entity"s[$db_index]")
+  sync_entity=$(sync_attr $sync_index $entity"s[$db_index]" integer)
   while [[ "$sync_entity" != null ]]; do
     [[ "$DB_STRING" != "" ]] && DB_STRING="$DB_STRING,"
     DB_STRING=$DB_STRING"db"$sync_entity":$entity"
     db_index=$(expr $db_index + 1)
-    sync_entity=$(sync_attr $sync_index $entity"s[$db_index]")
+    sync_entity=$(sync_attr $sync_index $entity"s[$db_index]" integer)
   done
-  }
+}
 
 db_sync_string() {
   local sync_index=$1
