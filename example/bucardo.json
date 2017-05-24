@@ -28,7 +28,7 @@
     },{
       "sources": [1,2],
       "targets": [0],
-      "tables": "product, order",
+      "tables": "product,order",
       "onetimecopy": 0
     }
   ]

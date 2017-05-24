@@ -51,7 +51,7 @@ Ubuntu-based Bucardo image for Docker Containers.
       },{
         "sources": [1,2],
         "targets": [3],
-        "tables": "product, order",
+        "tables": "product,order",
         "onetimecopy": 0
       }
     ]
