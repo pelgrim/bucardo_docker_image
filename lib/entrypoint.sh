@@ -96,7 +96,7 @@ one_time_copy_attr() {
   local value=$(sync_attr $sync_index onetimecopy integer)
   local invalid_chars=$(echo $string_attr | sed -e "s/[0,1,2]//")
   check_invalid_chars $value $invalid_chars
-  echo $value 
+  echo $value
 }
 
 load_db_pass() {
@@ -185,8 +185,7 @@ main() {
   add_databases_to_bucardo
   add_syncs_to_bucardo
   start_bucardo
-  /bin/bash
-  #bucardo_status
+  bucardo_status
 }
 
 main
