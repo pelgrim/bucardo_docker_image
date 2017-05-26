@@ -74,16 +74,20 @@ Ubuntu-based Bucardo image for Docker Containers.
     - 0 No full copy is done
     - 1 A full table copy is always performed
     - 2 A full copy is done in case the destination table is empty
-    
-4. Start the container with a command such as:
+
+4. Start the container:
 
   ```bash
   docker run --name my_own_bucardo_container \
     -v <bucardo.json dir>:/media/bucardo \
-    -it plgr/bucardo
+    -d plgr/bucardo
   ```
 
-And that's that. If you run a <code>docker attach my_own_bucardo_container</code>, you will be able to watch the current status of your bucardo syncs.
+5. Check bucardo's status:
+
+  ```bash
+  docker logs my_own_bucardo_container -f
+  ```
 
 ## How to use it (env-based passwords)
 
@@ -97,7 +101,7 @@ Same as before. The only difference is:
   docker run --name my_own_bucardo_container \
       -v <bucardo.json dir>:/media/bucardo \
       -e BUCARDO_DB3="secret" \
-      -it plgr/bucardo
+      -d plgr/bucardo
   ```
 
 ## Acknowlegments
