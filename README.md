@@ -51,7 +51,7 @@ Ubuntu-based Bucardo image for Docker Containers.
       },{
         "sources": [1,2],
         "targets": [3],
-        "tables": "product, order",
+        "tables": "product,order",
         "onetimecopy": 0
       }
     ]
@@ -70,7 +70,7 @@ Ubuntu-based Bucardo image for Docker Containers.
 
   * The other attribute required is the syncs' *table lists*. A *table list* is a String containing the tables sync'd by that sync, separated by a comma and a space, as in the example above.
 
-  * [Onetimecopy](https://bucardo.org/wiki/Onetimecopy) is used describe if a full table copy is required:
+  * [Onetimecopy](https://bucardo.org/wiki/Onetimecopy) is used for full table copy:
     - 0 No full copy is done
     - 1 A full table copy is always performed
     - 2 A full copy is done in case the destination table is empty
