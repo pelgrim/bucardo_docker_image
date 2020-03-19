@@ -1,6 +1,10 @@
 services:
   - docker
 
+install:
+  - echo "$DOCKER_PASSWORD" | docker login -u jefftian --password-stdin
+
+
 script:
   - docker build -t jefftian/bucardo .
-  - echo $DOCKER_PASSWORD | docker push jefftian/bucardo
+  - docker push jefftian/bucardo
