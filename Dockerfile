@@ -3,7 +3,7 @@ FROM ubuntu:xenial
 LABEL maintainer="lucas@vieira.io"
 LABEL version="1.0"
 
-ENV PG_VERSION 12.2
+ENV PG_VERSION 12
 
 RUN apt-get update \
     && apt-get -y install software-properties-common wget jq netcat
