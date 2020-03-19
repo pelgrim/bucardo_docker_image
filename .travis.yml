@@ -1,0 +1,6 @@
+services:
+  - docker
+
+script:
+  - docker build -t jefftian/bucardo .
+  - echo $DOCKER_PASSWORD | docker push jefftian/bucardo
