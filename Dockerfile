@@ -18,10 +18,6 @@ RUN apt-get -y update \
 
 RUN apt-get -y install postgresql-${PG_VERSION} postgresql-plperl-${PG_VERSION} bucardo
 
-RUN apt-get -y install build-essential git
-RUN git clone https://github.com/bucardo/bucardo
-RUN cd bucardo && perl Makefile.PL && make && make install
-
 COPY etc/pg_hba.conf /etc/postgresql/${PG_VERSION}/main/
 COPY etc/bucardorc /etc/bucardorc
 
@@ -32,10 +28,16 @@ RUN mkdir /var/run/bucardo && chown postgres /var/run/bucardo
 RUN usermod -aG bucardo postgres
 
 RUN service postgresql start \
+    && service postgresql status \
     && su - postgres -c "bucardo install --batch"
 
 COPY lib/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
+
+
+RUN apt-get -y install build-essential git
+RUN git clone https://github.com/bucardo/bucardo
+RUN cd bucardo && perl Makefile.PL && make && make install
 
 VOLUME "/media/bucardo"
 CMD ["/bin/bash","-c","/entrypoint.sh"]
