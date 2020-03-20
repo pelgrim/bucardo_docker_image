@@ -18,6 +18,15 @@ RUN apt-get -y update \
 
 RUN apt-get -y install postgresql-${PG_VERSION} postgresql-plperl-${PG_VERSION} bucardo
 
+RUN apt-get -y install build-essential git
+RUN git clone https://github.com/bucardo/bucardo
+RUN cd bucardo
+RUN perl Makefile.PL
+RUN make
+RUN make test
+RUN make install
+RUN cd -
+
 COPY etc/pg_hba.conf /etc/postgresql/${PG_VERSION}/main/
 COPY etc/bucardorc /etc/bucardorc
 
