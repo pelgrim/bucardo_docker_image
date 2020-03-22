@@ -16,7 +16,7 @@ RUN wget -q -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key ad
 RUN apt-get -y update \
     && apt-get -y upgrade
 
-RUN apt-get -y install postgresql-${PG_VERSION} postgresql-plperl-${PG_VERSION} libdbi-perl libpq-dev libdbd-pg-perl
+RUN apt-get -y install postgresql-${PG_VERSION} postgresql-plperl-${PG_VERSION} libdbi-perl libpq-dev libdbd-pg-perl libdbix-safe-perl
 
 RUN apt-get -y install build-essential git
 RUN git clone https://github.com/bucardo/bucardo
