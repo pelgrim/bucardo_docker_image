@@ -164,12 +164,12 @@ add_syncs_to_bucardo() {
     echo "add sync sync$sync_index \
                          dbs=$DB_STRING \
                          tables=$(sync_attr $sync_index tables list) \
-                         onetimecopy=$one_time_copy"
+                         onetimecopy=$one_time_copy conflict_strategy=latest"
 
     run_bucardo_command "add sync sync$sync_index \
                          dbs=$DB_STRING \
                          tables=$(sync_attr $sync_index tables list) \
-                         onetimecopy=$one_time_copy"
+                         onetimecopy=$one_time_copy conflict_strategy=latest"
 
     echo "added"
 
