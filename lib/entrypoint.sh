@@ -50,8 +50,6 @@ validate_list_attr() {
 
 run_bucardo_command() {
   local comm=$1
-  echo "command = "
-  echo $comm
   su - postgres -c "bucardo $comm"
 }
 
@@ -179,7 +177,7 @@ add_syncs_to_bucardo() {
 
 start_bucardo() {
   echo "[CONTAINER] Starting Bucardo..."
-  run_bucardo_command "start"
+  run_bucardo_command "start --verbose"
 }
 
 bucardo_status() {
