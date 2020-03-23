@@ -36,7 +36,8 @@ RUN usermod -aG bucardo postgres
 
 RUN service postgresql start \
     && service postgresql status \
-    && su - postgres -c "bucardo install --batch"
+    && su - postgres -c "bucardo install --batch" \
+    && su - postgres -c "./bucardo set log_level=debug"
 
 COPY lib/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
