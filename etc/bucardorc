@@ -1,3 +1,3 @@
 dbport = 5432
-dbuser = postgres
+dbuser = bucardo
 dbname = bucardo
