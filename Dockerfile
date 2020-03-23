@@ -29,7 +29,7 @@ RUN chown postgres /etc/postgresql/${PG_VERSION}/main/pg_hba.conf
 RUN chown postgres /etc/bucardorc
 RUN mkdir -p /var/log/bucardo
 RUN touch /var/log/bucardo/log.bucardo
-RUN chown postgres /var/log/bucardo
+RUN chown postgres /var/log/bucardo/log.bucardo
 RUN mkdir /var/run/bucardo && chown postgres /var/run/bucardo
 RUN groupadd bucardo
 RUN usermod -aG bucardo postgres
