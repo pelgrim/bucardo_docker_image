@@ -22,6 +22,8 @@ RUN apt-get -y install build-essential git
 RUN git clone https://github.com/bucardo/bucardo
 RUN cd bucardo && perl Makefile.PL && make && make install
 
+RUN apt-get -y install vim
+
 COPY etc/pg_hba.conf /etc/postgresql/${PG_VERSION}/main/
 COPY etc/bucardorc /etc/bucardorc
 
