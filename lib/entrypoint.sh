@@ -158,17 +158,26 @@ add_syncs_to_bucardo() {
     db_sync_string $sync_index
     local one_time_copy="$(one_time_copy_attr $sync_index)"
     run_bucardo_command "del sync sync$sync_index"
+    echo "will adding ..."
+    echo "add sync sync$sync_index \
+                         dbs=$DB_STRING \
+                         tables=$(sync_attr $sync_index tables list) \
+                         onetimecopy=$one_time_copy conflict_strategy=latest"
+
     run_bucardo_command "add sync sync$sync_index \
                          dbs=$DB_STRING \
                          tables=$(sync_attr $sync_index tables list) \
-                         onetimecopy=$one_time_copy"
+                         onetimecopy=$one_time_copy conflict_strategy=latest"
+
+    echo "added"
+
     sync_index=$(expr $sync_index + 1)
   done
 }
 
 start_bucardo() {
   echo "[CONTAINER] Starting Bucardo..."
-  run_bucardo_command "start"
+  run_bucardo_command "start --verbose"
 }
 
 bucardo_status() {
